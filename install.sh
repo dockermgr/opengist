@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version           :  202408122025-git
+##@Version           :  202408131638-git
 # @@Author           :  Jason Hempstead
 # @@Contact          :  jason@casjaysdev.pro
 # @@License          :  LICENSE.md
 # @@ReadME           :  install.sh --help
 # @@Copyright        :  Copyright: (c) 2024 Jason Hempstead, Casjays Developments
-# @@Created          :  Monday, Aug 12, 2024 20:25 EDT
+# @@Created          :  Tuesday, Aug 13, 2024 16:38 EDT
 # @@File             :  install.sh
 # @@Description      :  Container installer script for opengist
 # @@Changelog        :  New script
@@ -27,7 +27,7 @@
 # shellcheck disable=SC2317
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPNAME="opengist"
-VERSION="202408122025-git"
+VERSION="202408131638-git"
 REPO_BRANCH="${GIT_REPO_BRANCH:-main}"
 HOME="${USER_HOME:-$HOME}"
 USER="${SUDO_USER:-$USER}"
@@ -2499,12 +2499,14 @@ if [ "$CONTAINER_INSTALLED" = "true" ] || __docker_ps_all -q; then
             set_host=""
             set_port="$(echo "$custom_port" | awk -F ':' '{print $2}')"
             set_service="$(echo "$custom_port" | awk -F ':' '{print $1}')"
+            service="${service//$custom_port/}"
           done
-        elif echo "$service" | grep -q ":.*.:"; then
+        fi
+        if echo "$service" | grep -q ":.*.:"; then
           set_host="$(echo "$service" | awk -F ':' '{print $1}')"
           set_port="$(echo "$service" | awk -F ':' '{print $3}')"
           set_service="$(echo "$service" | awk -F ':' '{print $2}')"
-        else
+        elif [ -n "$service" ] && [ "$service" != " " ]; then
           set_host="$SET_LISTEN"
           set_port="$(echo "$service" | awk -F ':' '{print $1}')"
           set_service="$(echo "$service" | awk -F ':' '{print $2}')"
